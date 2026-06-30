@@ -19,7 +19,7 @@
   <section class="bg-white py-16">
     <div class="mx-auto max-w-7xl px-6 lg:px-8">
       <div class="mx-auto grid max-w-5xl items-center gap-8 rounded-lg bg-gradient-to-r from-[#00E5FF] via-[#00A2E8] to-[#0050A1] p-8 shadow-xl shadow-[#0050A1]/20 sm:p-10 lg:grid-cols-[0.8fr_1.2fr]">
-        <div class="text-center lg:text-left" x-data="{ count: 0, target: 100, init() { const step = Math.max(1, Math.ceil(this.target / 45)); const timer = setInterval(() => { this.count = Math.min(this.target, this.count + step); if (this.count >= this.target) clearInterval(timer); }, 28); } }">
+        <div class="text-center lg:text-left" x-data="{ count: 0, target: 100, timer: null, ready: false, init() { const observer = new IntersectionObserver(([entry]) => { if (!this.ready) { this.ready = true; if (entry.isIntersecting) return; } if (entry.isIntersecting) { this.animate(); } else { this.reset(); } }, { threshold: 0.45 }); observer.observe(this.$el); }, animate() { this.reset(); const step = Math.max(1, Math.ceil(this.target / 45)); this.timer = setInterval(() => { this.count = Math.min(this.target, this.count + step); if (this.count >= this.target) clearInterval(this.timer); }, 28); }, reset() { if (this.timer) clearInterval(this.timer); this.timer = null; this.count = 0; } }">
           <p class="text-sm font-bold uppercase tracking-wide text-white/80">Kepercayaan Pelanggan</p>
           <p class="mt-4 text-6xl font-bold tracking-tight text-white sm:text-7xl"><span x-text="count">100</span>++</p>
           <p class="mt-2 text-2xl font-bold text-white">Pelanggan Setia</p>
