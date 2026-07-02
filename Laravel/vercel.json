@@ -35,6 +35,5 @@
             "src": "/(.*)",
             "dest": "/api/index.php"
         }
-    ],
-    "buildCommand": "composer install --no-dev --optimize-autoloader && npm install && npm run build"
+    ]
 }
