@@ -26,9 +26,9 @@
     <div>
       <p class="font-semibold">Kontak</p>
       <div class="mt-4 space-y-2 text-sm text-white/85">
-        <p>Desa Ilir, Kandanghaur, Indramayu</p>
-        <p>WhatsApp: 0852-2436-5449</p>
-        <a href="https://wa.me/6285224365449" class="inline-flex rounded-md bg-[#0B6B3A] px-4 py-2 font-bold text-white hover:bg-[#07542D]">Hubungi Admin</a>
+        <p>{{ $siteSettings['address_short'] ?? 'Desa Ilir, Kandanghaur, Indramayu' }}</p>
+        <p>WhatsApp: {{ $siteSettings['whatsapp_display'] ?? '0852-2436-5449' }}</p>
+        <a href="{{ route('whatsapp.click', ['source_page' => 'footer', 'message' => 'Halo Admin PD Syahrizal Galon, saya ingin bertanya tentang layanan SIDAGAS.']) }}" class="inline-flex rounded-md bg-[#0B6B3A] px-4 py-2 font-bold text-white hover:bg-[#07542D]">Hubungi Admin</a>
       </div>
     </div>
   </div>

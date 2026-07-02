@@ -30,6 +30,15 @@
 
       <form action="{{ route('login') }}" method="POST" class="space-y-6">
         @csrf
+        @if($errors->any())
+          <div class="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            <ul class="list-disc space-y-1 pl-5">
+              @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+            </ul>
+          </div>
+        @endif
         <div>
           <label for="email" class="block text-sm/6 font-medium text-gray-600">Email Address</label>
           <div class="mt-2">
@@ -55,8 +64,8 @@
       </form>
   
       <p class="mt-10 text-center text-sm/6 text-gray-400">
-        Ga bisa masuk?
-        <a href="wa.me/+6285321899845" class="font-semibold text-indigo-400 hover:text-indigo-300">Hubungi</a>
+        Belum punya akun pelanggan?
+        <a href="{{ route('register') }}" class="font-semibold text-indigo-400 hover:text-indigo-300">Daftar</a>
       </p>
     </div>
   </div>

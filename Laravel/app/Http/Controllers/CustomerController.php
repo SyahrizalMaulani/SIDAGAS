@@ -12,7 +12,7 @@ class CustomerController extends Controller
         // Endpoint API Gateway
         // Sesuaikan dengan URL API Gateway Anda. Jika Laravel jalan di host, gunakan localhost.
         // Jika Laravel jalan di dalam container satu network, gunakan http://api-gateway:3000
-        $apiGatewayUrl = env('API_GATEWAY_URL', 'http://localhost:3000');
+        $apiGatewayUrl = config('services.api_gateway.url');
 
         // Query GraphQL untuk mengambil daftar produk (Inventory Service)
         $inventoryQuery = '

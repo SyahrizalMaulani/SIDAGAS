@@ -13,8 +13,9 @@
     </div>
 
     <div class="hidden items-center gap-3 lg:flex">
-      <a href="https://wa.me/6285224365449?text={{ rawurlencode('Halo Admin PD Syahrizal Galon, saya ingin memesan dari website SIDAGAS.') }}" class="rounded-md bg-[#0B6B3A] px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-[#07542D]">Pesan via WhatsApp</a>
-      <a href="{{ route('login') }}" class="rounded-md border border-[#0050A1] px-4 py-2.5 text-sm font-bold text-[#0050A1] hover:bg-[#00E5FF]/10">Masuk</a>
+      <a href="{{ route('whatsapp.click', ['source_page' => 'navbar', 'message' => 'Halo Admin PD Syahrizal Galon, saya ingin memesan dari website SIDAGAS.']) }}" class="rounded-md bg-[#0B6B3A] px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-[#07542D]">Pesan via WhatsApp</a>
+      {{-- <a href="{{ route('register') }}" class="rounded-md border border-[#0B6B3A] px-4 py-2.5 text-sm font-bold text-[#0B6B3A] hover:bg-emerald-50">Daftar</a>
+      <a href="{{ route('login') }}" class="rounded-md border border-[#0050A1] px-4 py-2.5 text-sm font-bold text-[#0050A1] hover:bg-[#00E5FF]/10">Masuk</a> --}}
     </div>
 
     <button type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-md border border-[#0050A1]/30 text-[#0A192F] lg:hidden" @click="open = !open" aria-label="Buka menu">
@@ -29,8 +30,9 @@
       <a href="{{ route('produk') }}" class="rounded-md px-3 py-2 text-sm font-semibold text-[#0A192F] hover:bg-[#00E5FF]/10">Produk</a>
       <a href="{{ route('blog') }}" class="rounded-md px-3 py-2 text-sm font-semibold text-[#0A192F] hover:bg-[#00E5FF]/10">Blog</a>
       <a href="{{ route('kontak') }}" class="rounded-md px-3 py-2 text-sm font-semibold text-[#0A192F] hover:bg-[#00E5FF]/10">Kontak</a>
-      <a href="https://wa.me/6285224365449?text={{ rawurlencode('Halo Admin PD Syahrizal Galon, saya ingin memesan dari website SIDAGAS.') }}" class="mt-2 rounded-md bg-[#0B6B3A] px-3 py-2 text-center text-sm font-bold text-white">Pesan via WhatsApp</a>
-      <a href="{{ route('login') }}" class="rounded-md border border-[#0050A1] px-3 py-2 text-center text-sm font-bold text-[#0050A1]">Masuk</a>
+      <a href="{{ route('whatsapp.click', ['source_page' => 'navbar', 'message' => 'Halo Admin PD Syahrizal Galon, saya ingin memesan dari website SIDAGAS.']) }}" class="mt-2 rounded-md bg-[#0B6B3A] px-3 py-2 text-center text-sm font-bold text-white">Pesan via WhatsApp</a>
+      {{-- <a href="{{ route('register') }}" class="rounded-md border border-[#0B6B3A] px-3 py-2 text-center text-sm font-bold text-[#0B6B3A]">Daftar</a>
+      <a href="{{ route('login') }}" class="rounded-md border border-[#0050A1] px-3 py-2 text-center text-sm font-bold text-[#0050A1]">Masuk</a> --}}
     </div>
   </div>
 </header>

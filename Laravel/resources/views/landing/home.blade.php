@@ -27,7 +27,7 @@
         <div class="text-center lg:text-left">
           <h2 class="text-3xl font-bold text-white">Dipercaya pelanggan lokal Indramayu</h2>
           <p class="mt-4 leading-7 text-white/85">Rumah tangga, warung, UMKM, dan pelanggan sekitar memilih PD Syahrizal Galon karena layanan yang dekat, mudah dihubungi, serta memahami kebutuhan galon, LPG, air kemasan, dan layanan digital harian.</p>
-          <a href="https://wa.me/6285224365449?text={{ rawurlencode('Halo Admin PD Syahrizal Galon, saya ingin jadi pelanggan setia.') }}" class="mt-7 inline-flex items-center rounded-md bg-white px-5 py-3 text-sm font-bold text-[#0050A1] hover:bg-[#F2FCFF]">Jadi pelanggan setia -&gt;</a>
+          <a href="{{ route('whatsapp.click', ['source_page' => 'home', 'message' => 'Halo Admin PD Syahrizal Galon, saya ingin jadi pelanggan setia.']) }}" class="mt-7 inline-flex items-center rounded-md bg-white px-5 py-3 text-sm font-bold text-[#0050A1] hover:bg-[#F2FCFF]">Jadi pelanggan setia -&gt;</a>
         </div>
       </div>
     </div>
@@ -40,11 +40,11 @@
         <h2 class="mt-3 text-3xl font-bold text-[#0A192F]">Kebutuhan harian pelanggan dalam satu tempat</h2>
       </div>
       <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        @foreach(['Galon isi ulang', 'Gas LPG 3 kg', 'Aqua dan air kemasan', 'Pulsa, token, PDAM'] as $service)
+        @foreach($productCategories as $service)
           <div class="rounded-lg border border-[#B8F7FF] bg-white p-6 shadow-sm">
             <div class="mb-4 h-2 w-12 rounded-full bg-gradient-to-r from-[#00E5FF] via-[#00A2E8] to-[#0050A1]"></div>
-            <h3 class="text-lg font-bold text-[#0A192F]">{{ $service }}</h3>
-            <p class="mt-3 text-sm leading-6 text-slate-600">Dipesan mudah melalui WhatsApp dan diproses admin PD Syahrizal Galon.</p>
+            <h3 class="text-lg font-bold text-[#0A192F]">{{ $service->name }}</h3>
+            <p class="mt-3 text-sm leading-6 text-slate-600">{{ $service->description ?: 'Dipesan mudah melalui WhatsApp dan diproses admin PD Syahrizal Galon.' }}</p>
           </div>
         @endforeach
       </div>
@@ -63,23 +63,22 @@
       <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         @foreach($products as $product)
           @php
-            $isFeaturedProduct = in_array($product['slug'], ['galon-isi-ulang', 'gas-lpg-3-kg']);
-            $message = "Halo Admin PD Syahrizal Galon, saya ingin memesan:\n\nProduk: {$product['name']}\nJumlah:\nNama:\nAlamat:\nCatatan:\n\nSaya mendapatkan informasi dari website SIDAGAS.";
+            $isFeaturedProduct = $product->is_featured;
           @endphp
           <article class="relative overflow-hidden rounded-lg border bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg {{ $isFeaturedProduct ? 'border-[#00E5FF] shadow-[#0050A1]/15 ring-2 ring-[#00E5FF]/40' : 'border-slate-200' }}">
             @if($isFeaturedProduct)
               <div class="absolute left-4 top-4 z-10 rounded-full bg-gradient-to-r from-[#00E5FF] via-[#00A2E8] to-[#0050A1] px-3 py-1 text-xs font-bold uppercase tracking-wide text-white shadow-sm">Produk Unggulan</div>
             @endif
-            <img src="{{ asset($product['image']) }}" alt="{{ $product['name'] }} PD Syahrizal Galon" width="305" height="228" loading="lazy" decoding="async" class="h-44 w-full {{ $isFeaturedProduct ? 'bg-[#F2FCFF]' : 'bg-slate-100' }} object-contain p-4">
+            <img src="{{ asset($product->imagePath()) }}" alt="{{ $product->name }} PD Syahrizal Galon" width="305" height="228" loading="lazy" decoding="async" class="h-44 w-full {{ $isFeaturedProduct ? 'bg-[#F2FCFF]' : 'bg-slate-100' }} object-contain p-4">
             <div class="p-5">
-              <p class="text-xs font-bold uppercase tracking-wide text-[#0050A1]">{{ $product['category'] }}</p>
-              <h3 class="mt-2 text-lg font-bold text-[#0A192F]">{{ $product['name'] }}</h3>
-              <p class="mt-2 text-sm leading-6 text-slate-600">{{ $product['description'] }}</p>
+              <p class="text-xs font-bold uppercase tracking-wide text-[#0050A1]">{{ $product->category?->name }}</p>
+              <h3 class="mt-2 text-lg font-bold text-[#0A192F]">{{ $product->name }}</h3>
+              <p class="mt-2 text-sm leading-6 text-slate-600">{{ $product->short_description ?: $product->description }}</p>
               <div class="mt-4 flex items-center justify-between text-sm">
-                <span class="font-bold text-[#0A192F]">{{ $product['price'] }}</span>
-                <span class="rounded-full bg-emerald-50 px-3 py-1 font-semibold text-emerald-700">{{ $product['status'] }}</span>
+                <span class="font-bold text-[#0A192F]">{{ $product->priceLabel() }}</span>
+                <span class="rounded-full bg-emerald-50 px-3 py-1 font-semibold text-emerald-700">{{ $product->statusLabel() }}</span>
               </div>
-              <a href="https://wa.me/6285224365449?text={{ rawurlencode($message) }}" class="mt-5 block rounded-md bg-[#0B6B3A] px-4 py-2.5 text-center text-sm font-bold text-white hover:bg-[#07542D]">Pesan via WhatsApp</a>
+              <a href="{{ route('whatsapp.click', ['product' => $product->id, 'source_page' => 'home', 'message' => $product->whatsappMessage()]) }}" class="mt-5 block rounded-md bg-[#0B6B3A] px-4 py-2.5 text-center text-sm font-bold text-white hover:bg-[#07542D]">Pesan via WhatsApp</a>
             </div>
           </article>
         @endforeach
@@ -94,40 +93,28 @@
           <p class="text-sm font-bold uppercase tracking-wide text-[#0050A1]">Review Pelanggan</p>
           <h2 class="mt-3 text-3xl font-bold text-[#0A192F]">Pengalaman dari mereka yang setia</h2>
         </div>
-        <a href="https://wa.me/6285224365449?text={{ rawurlencode('Halo Admin PD Syahrizal Galon, saya ingin merasakan layanan PD Syahrizal Galon.') }}" class="text-sm font-bold text-[#0050A1] hover:text-[#0A192F]">Mereka sudah merasakannya, kamu kapan?</a>
+        <a href="{{ route('whatsapp.click', ['source_page' => 'home', 'message' => 'Halo Admin PD Syahrizal Galon, saya ingin merasakan layanan PD Syahrizal Galon.']) }}" class="text-sm font-bold text-[#0050A1] hover:text-[#0A192F]">Mereka sudah merasakannya, kamu kapan?</a>
       </div>
 
       <div class="sidagas-review-marquee mt-10 overflow-hidden">
         <div class="sidagas-review-track flex w-max gap-5">
-          @foreach([
-            ['name' => 'Ibu Sari', 'role' => 'Pelanggan rumah tangga', 'review' => 'Pesan galon jadi lebih mudah. Tinggal WhatsApp, admin cepat merespons dan pengiriman sampai rumah.'],
-            ['name' => 'Pak Dedi', 'role' => 'Pemilik warung', 'review' => 'Stok LPG dan galon selalu saya cek lewat admin. Pelayanannya ramah dan jelas.'],
-            ['name' => 'Ibu Rina', 'role' => 'Pelanggan setia', 'review' => 'Sudah lama langganan karena harganya jujur, pengiriman cepat, dan komunikasinya enak.'],
-            ['name' => 'Kang Asep', 'role' => 'Pelaku UMKM', 'review' => 'Untuk kebutuhan jualan, galon dan LPG dari Syahrizal Galon sangat membantu operasional harian.'],
-            ['name' => 'Bu Neng', 'role' => 'Pelanggan sekitar', 'review' => 'Kalau butuh galon mendadak, tinggal hubungi admin. Responsnya cepat dan sopan.'],
-          ] as $review)
+          @foreach($testimonials as $review)
             <article class="w-80 shrink-0 rounded-lg border border-[#B8F7FF] bg-white p-6 shadow-sm shadow-[#0050A1]/5">
               <div class="mb-4 h-2 w-12 rounded-full bg-gradient-to-r from-[#00E5FF] via-[#00A2E8] to-[#0050A1]"></div>
-              <p class="text-sm leading-6 text-slate-600">"{{ $review['review'] }}"</p>
+              <p class="text-sm leading-6 text-slate-600">"{{ $review->message }}"</p>
               <div class="mt-5">
-                <p class="font-bold text-[#0A192F]">{{ $review['name'] }}</p>
-                <p class="text-sm text-[#0050A1]">{{ $review['role'] }}</p>
+                <p class="font-bold text-[#0A192F]">{{ $review->customer_name }}</p>
+                <p class="text-sm text-[#0050A1]">{{ $review->customer_type }}</p>
               </div>
             </article>
           @endforeach
-          @foreach([
-            ['name' => 'Ibu Sari', 'role' => 'Pelanggan rumah tangga', 'review' => 'Pesan galon jadi lebih mudah. Tinggal WhatsApp, admin cepat merespons dan pengiriman sampai rumah.'],
-            ['name' => 'Pak Dedi', 'role' => 'Pemilik warung', 'review' => 'Stok LPG dan galon selalu saya cek lewat admin. Pelayanannya ramah dan jelas.'],
-            ['name' => 'Ibu Rina', 'role' => 'Pelanggan setia', 'review' => 'Sudah lama langganan karena harganya jujur, pengiriman cepat, dan komunikasinya enak.'],
-            ['name' => 'Kang Asep', 'role' => 'Pelaku UMKM', 'review' => 'Untuk kebutuhan jualan, galon dan LPG dari Syahrizal Galon sangat membantu operasional harian.'],
-            ['name' => 'Bu Neng', 'role' => 'Pelanggan sekitar', 'review' => 'Kalau butuh galon mendadak, tinggal hubungi admin. Responsnya cepat dan sopan.'],
-          ] as $review)
+          @foreach($testimonials as $review)
             <article class="w-80 shrink-0 rounded-lg border border-[#B8F7FF] bg-white p-6 shadow-sm shadow-[#0050A1]/5" aria-hidden="true">
               <div class="mb-4 h-2 w-12 rounded-full bg-gradient-to-r from-[#00E5FF] via-[#00A2E8] to-[#0050A1]"></div>
-              <p class="text-sm leading-6 text-slate-600">"{{ $review['review'] }}"</p>
+              <p class="text-sm leading-6 text-slate-600">"{{ $review->message }}"</p>
               <div class="mt-5">
-                <p class="font-bold text-[#0A192F]">{{ $review['name'] }}</p>
-                <p class="text-sm text-[#0050A1]">{{ $review['role'] }}</p>
+                <p class="font-bold text-[#0A192F]">{{ $review->customer_name }}</p>
+                <p class="text-sm text-[#0050A1]">{{ $review->customer_type }}</p>
               </div>
             </article>
           @endforeach
@@ -236,17 +223,13 @@
       <p class="text-center text-sm font-bold uppercase tracking-wide text-[#0050A1]">FAQ</p>
       <h2 class="mt-3 text-center text-3xl font-bold text-[#0A192F]">Pertanyaan umum pelanggan</h2>
       <div class="mt-8 divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white">
-        @foreach([
-          'Bagaimana cara pesan?' => 'Pilih produk di website lalu klik tombol Pesan via WhatsApp. Lengkapi jumlah, nama, alamat, dan catatan.',
-          'Apakah stok LPG selalu tersedia?' => 'Stok LPG 3 kg mengikuti alokasi dan jadwal distribusi. Silakan cek stok melalui WhatsApp admin.',
-          'Area layanan di mana saja?' => 'Fokus layanan berada di Desa Ilir, Kandanghaur, Indramayu dan area sekitar sesuai konfirmasi admin.',
-        ] as $question => $answer)
+        @foreach($faqs as $faq)
           <div class="p-5">
             <button class="flex w-full items-center justify-between text-left font-bold text-[#0A192F]" @click="open = open === {{ $loop->iteration }} ? 0 : {{ $loop->iteration }}">
-              {{ $question }}
+              {{ $faq->question }}
               <span>+</span>
             </button>
-            <p class="mt-3 text-sm leading-6 text-slate-600" x-show="open === {{ $loop->iteration }}">{{ $answer }}</p>
+            <p class="mt-3 text-sm leading-6 text-slate-600" x-show="open === {{ $loop->iteration }}">{{ $faq->answer }}</p>
           </div>
         @endforeach
       </div>

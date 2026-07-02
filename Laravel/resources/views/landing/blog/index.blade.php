@@ -12,18 +12,18 @@
   <section class="bg-[#F7FDFF] py-12">
     <div class="mx-auto max-w-7xl px-6 lg:px-8">
       <div class="flex flex-wrap gap-3">
-        @foreach(['Tips Air Minum', 'Informasi LPG', 'Layanan Syahrizal Galon', 'Edukasi Pelanggan', 'Berita Usaha'] as $category)
-          <span class="rounded-full bg-white px-4 py-2 text-sm font-bold text-[#0050A1] shadow-sm">{{ $category }}</span>
+        @foreach($categories as $category)
+          <span class="rounded-full bg-white px-4 py-2 text-sm font-bold text-[#0050A1] shadow-sm">{{ $category->name }}</span>
         @endforeach
       </div>
 
       <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         @foreach($posts as $post)
           <article class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-            <p class="text-xs font-bold uppercase tracking-wide text-[#0050A1]">{{ $post['category'] }}</p>
-            <h2 class="mt-3 text-xl font-bold text-[#0A192F]">{{ $post['title'] }}</h2>
-            <p class="mt-3 text-sm leading-6 text-slate-600">{{ $post['excerpt'] }}</p>
-            <a href="{{ route('blog.show', $post['slug']) }}" class="mt-6 inline-flex text-sm font-bold text-[#0050A1] hover:text-[#0A192F]">Baca artikel</a>
+            <p class="text-xs font-bold uppercase tracking-wide text-[#0050A1]">{{ $post->category?->name }}</p>
+            <h2 class="mt-3 text-xl font-bold text-[#0A192F]">{{ $post->title }}</h2>
+            <p class="mt-3 text-sm leading-6 text-slate-600">{{ $post->excerpt }}</p>
+            <a href="{{ route('blog.show', $post->slug) }}" class="mt-6 inline-flex text-sm font-bold text-[#0050A1] hover:text-[#0A192F]">Baca artikel</a>
           </article>
         @endforeach
       </div>
