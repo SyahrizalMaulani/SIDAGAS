@@ -13,7 +13,10 @@ use App\Models\Testimonial;
 use App\Models\WhatsappClick;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
+use Throwable;
 
 class PublicSiteController extends Controller
 {
@@ -175,24 +178,13 @@ class PublicSiteController extends Controller
 
     public function sitemap()
     {
-        $latestBlogPost = BlogPost::query()->published()->latest('updated_at')->first();
-        $latestProduct = Product::query()->latest('updated_at')->first();
-
-        $blogLastMod = $latestBlogPost ? $latestBlogPost->updated_at->toAtomString() : null;
-        $productLastMod = $latestProduct ? $latestProduct->updated_at->toAtomString() : null;
-
-        // Home page updates if either blog or products update
-        $homeLastMod = null;
-        if ($blogLastMod && $productLastMod) {
-            $homeLastMod = $latestBlogPost->updated_at->gt($latestProduct->updated_at) ? $blogLastMod : $productLastMod;
-        } else {
-            $homeLastMod = $blogLastMod ?: $productLastMod;
-        }
+        $blogLastMod = null;
+        $productLastMod = null;
 
         $urls = [
             [
                 'loc' => route('home'),
-                'lastmod' => $homeLastMod,
+                'lastmod' => null,
                 'priority' => '1.0',
             ],
             [
@@ -217,16 +209,45 @@ class PublicSiteController extends Controller
             ],
         ];
 
-        BlogPost::query()->published()->get(['slug', 'updated_at'])->each(function (BlogPost $post) use (&$urls) {
-            $urls[] = [
-                'loc' => route('blog.show', $post->slug),
-                'lastmod' => $post->updated_at->toAtomString(),
-                'priority' => '0.8',
-            ];
-        });
+        try {
+            if (Schema::hasTable('products')) {
+                $latestProduct = Product::query()->latest('updated_at')->first();
+                $productLastMod = $this->sitemapLastModified($latestProduct?->updated_at);
+                $urls[2]['lastmod'] = $productLastMod;
+            }
+
+            if (Schema::hasTable('blog_posts')) {
+                $latestBlogPost = BlogPost::query()->published()->latest('updated_at')->first();
+                $blogLastMod = $this->sitemapLastModified($latestBlogPost?->updated_at);
+                $urls[3]['lastmod'] = $blogLastMod;
+
+                BlogPost::query()->published()->get(['slug', 'updated_at'])->each(function (BlogPost $post) use (&$urls) {
+                    $urls[] = [
+                        'loc' => route('blog.show', $post->slug),
+                        'lastmod' => $this->sitemapLastModified($post->updated_at),
+                        'priority' => '0.8',
+                    ];
+                });
+            }
+
+            $urls[0]['lastmod'] = collect([$blogLastMod, $productLastMod])->filter()->sortDesc()->first();
+        } catch (Throwable) {
+            // Keep the static sitemap available even if dynamic content is temporarily unavailable.
+        }
 
         return response()
             ->view('sitemap', ['urls' => $urls])
             ->header('Content-Type', 'application/xml');
+    }
+
+    private function sitemapLastModified(mixed $value): ?string
+    {
+        if (!$value) {
+            return null;
+        }
+
+        return $value instanceof Carbon
+            ? $value->toAtomString()
+            : Carbon::parse($value)->toAtomString();
     }
 }
