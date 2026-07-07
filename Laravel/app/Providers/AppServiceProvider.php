@@ -33,6 +33,10 @@ class AppServiceProvider extends ServiceProvider
             $settings = [];
         }
 
+        if (config('app.env') === 'production') {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         View::share('siteSettings', $settings);
         View::share('siteWhatsappNumber', $settings['whatsapp_number'] ?? '6285224365449');
     }

@@ -8,6 +8,22 @@
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="{{ url()->current() }}">
   <link rel="icon" type="image/png" href="{{ asset('SIDAGAS-LOGO.png') }}">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ url()->current() }}">
+  <meta property="og:title" content="{{ $title }}">
+  <meta property="og:description" content="{{ $description }}">
+  <meta property="og:image" content="{{ asset('img/Sampul-Utama.webp') }}">
+  <meta property="og:site_name" content="SIDAGAS - PD Syahrizal Galon">
+  <meta property="og:locale" content="id_ID">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ $title }}">
+  <meta name="twitter:description" content="{{ $description }}">
+  <meta name="twitter:image" content="{{ asset('img/Sampul-Utama.webp') }}">
+
   <link rel="preconnect" href="https://rsms.me">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
@@ -28,7 +44,7 @@
   <a href="{{ route('whatsapp.click', ['source_page' => 'floating_button', 'message' => 'Halo Admin PD Syahrizal Galon, saya ingin bertanya tentang layanan SIDAGAS.']) }}"
      class="fixed bottom-5 right-5 z-40 inline-flex h-16 w-16 items-center justify-center rounded-full bg-white p-2 shadow-lg shadow-green-900/20 transition hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-200"
      aria-label="Hubungi admin SIDAGAS via WhatsApp">
-    <img src="{{ asset('img/logo/Whatsapp-logo.webp') }}" alt="" width="128" height="128" decoding="async" class="h-full w-full object-contain">
+    <img src="{{ asset('img/logo/Whatsapp-logo.webp') }}" alt="WhatsApp" width="128" height="128" decoding="async" class="h-full w-full object-contain">
   </a>
 
   <x-footer/>
