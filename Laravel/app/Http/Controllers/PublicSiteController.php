@@ -87,8 +87,22 @@ class PublicSiteController extends Controller
             '@context' => 'https://schema.org',
             '@type' => 'Product',
             'name' => $product->name,
+            'image' => asset($product->imagePath()),
             'description' => $product->short_description ?: $product->description,
             'category' => $product->category?->name,
+            'brand' => [
+                '@type' => 'Brand',
+                'name' => 'PD Syahrizal Galon',
+            ],
+            'offers' => [
+                '@type' => 'Offer',
+                'url' => route('produk'),
+                'priceCurrency' => 'IDR',
+                'price' => (float) ($product->price ?? 0),
+                'priceValidUntil' => date('Y-m-d', strtotime('+1 year')),
+                'availability' => $product->is_available ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+                'itemCondition' => 'https://schema.org/NewCondition',
+            ],
         ])->all();
 
         return view('landing.produk', [
