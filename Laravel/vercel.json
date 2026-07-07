@@ -28,6 +28,10 @@
             "dest": "/public/robots.txt"
         },
         {
+            "src": "/sitemap.xml",
+            "dest": "/api/index.php"
+        },
+        {
             "src": "/(.*\\.(css|js|png|jpg|jpeg|gif|svg|webp|ico|txt|xml|woff|woff2|ttf|eot))",
             "dest": "/public/$1"
         },
