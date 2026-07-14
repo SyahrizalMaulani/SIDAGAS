@@ -1,0 +1,96 @@
+# =============================================================================
+# Traefik Dynamic Configuration — Middlewares
+# SIDAGAS API Gateway
+# =============================================================================
+
+http:
+  middlewares:
+    # ---- Rate Limiting ----
+    rate-limit:
+      rateLimit:
+        average: 100        # 100 requests per second average
+        burst: 200           # Allow burst up to 200
+        period: 1s
+
+    # Rate limit ketat untuk guest order
+    rate-limit-guest-order:
+      rateLimit:
+        average: 5           # 5 requests per second
+        burst: 10
+        period: 1s
+
+    # Rate limit untuk auth endpoints
+    rate-limit-auth:
+      rateLimit:
+        average: 10
+        burst: 20
+        period: 1s
+
+    # ---- Security Headers ----
+    security-headers:
+      headers:
+        browserXssFilter: true
+        contentTypeNosniff: true
+        frameDeny: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 31536000
+        customFrameOptionsValue: "SAMEORIGIN"
+        customResponseHeaders:
+          X-Powered-By: ""
+          Server: ""
+
+
+    # ---- Strip API Prefix ----
+    api-strip-prefix:
+      stripPrefix:
+        prefixes:
+          - "/api/v1/identity"
+          - "/api/v1/customers"
+          - "/api/v1/catalog"
+          - "/api/v1/orders"
+          - "/api/v1/inventory"
+          - "/api/v1/payments"
+          - "/api/v1/finance"
+          - "/api/v1/deliveries"
+          - "/api/v1/pos"
+          - "/api/v1/procurement"
+          - "/api/v1/payroll"
+          - "/api/v1/notifications"
+          - "/api/v1/reports"
+          - "/api/v1/audit"
+
+    # ---- Retry (for internal service communication) ----
+    retry-middleware:
+      retry:
+        attempts: 3
+        initialInterval: 100ms
+
+    # ---- Compress Response ----
+    compress:
+      compress:
+        excludedContentTypes:
+          - "text/event-stream"
+
+    # ---- CORS (for frontend/website) ----
+    cors-headers:
+      headers:
+        accessControlAllowMethods:
+          - GET
+          - POST
+          - PUT
+          - PATCH
+          - DELETE
+          - OPTIONS
+        accessControlAllowHeaders:
+          - Content-Type
+          - Authorization
+          - X-Request-ID
+          - X-Correlation-ID
+          - X-Idempotency-Key
+        accessControlAllowOriginList:
+          - "http://localhost:3000"
+          - "http://localhost:8000"
+          - "https://sidagas.store/"
+        accessControlMaxAge: 86400
+        addVaryHeader: true

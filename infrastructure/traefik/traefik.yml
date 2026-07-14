@@ -1,0 +1,48 @@
+# =============================================================================
+# Traefik v3 Static Configuration — SIDAGAS API Gateway
+# =============================================================================
+
+# ---- API Dashboard ----
+api:
+  dashboard: true
+  insecure: true  # Development only; disable in production
+
+# ---- Entry Points ----
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+
+# ---- Providers ----
+providers:
+  # Docker auto-discovery via container labels
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false  # Only expose containers with traefik.enable=true
+    network: sidagas-public
+    watch: true
+
+  # File-based dynamic configuration (middlewares, etc.)
+  file:
+    directory: /etc/traefik/dynamic
+    watch: true
+
+# ---- Access Log (with correlation ID) ----
+accessLog:
+  filePath: /var/log/traefik/access.log
+  format: json
+  fields:
+    headers:
+      names:
+        X-Request-ID: keep
+        X-Correlation-ID: keep
+
+# ---- General Log ----
+log:
+  level: DEBUG
+  format: json
+
+# ---- Health Check Endpoint ----
+ping:
+  entryPoint: web
